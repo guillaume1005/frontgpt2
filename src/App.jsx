@@ -7,6 +7,7 @@ import {
 } from "react";
 import { BiPlus, BiUser, BiSend, BiSolidUserCircle } from "react-icons/bi";
 import { MdOutlineArrowLeft, MdOutlineArrowRight } from "react-icons/md";
+import FileUploader from "./FileUploader";
 
 function App() {
   const [text, setText] = useState("");
@@ -17,6 +18,7 @@ function App() {
   const [isResponseLoading, setIsResponseLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [isShowSidebar, setIsShowSidebar] = useState(false);
+  const [searchInDocuments, setSearchInDocuments] = useState(false);
   const scrollToLastItem = useRef(null);
 
   const createNewChat = () => {
@@ -50,6 +52,7 @@ function App() {
       },
       body: JSON.stringify({
         message: text,
+        searchInDocuments: searchInDocuments, // Pass the state to the backend
       }),
     };
 
@@ -74,7 +77,9 @@ function App() {
 
       if (!data.error) {
         setErrorText("");
-        setMessage(data.choices[0].message);
+        console.log(data.generated_text)
+        setMessage(data.generated_text);
+        // setMessage(data.choices[0].message);
         setTimeout(() => {
           scrollToLastItem.current?.lastElementChild?.scrollIntoView({
             behavior: "smooth",
@@ -157,8 +162,20 @@ function App() {
         <section className={`sidebar ${isShowSidebar ? "open" : ""}`}>
           <div className="sidebar-header" onClick={createNewChat} role="button">
             <BiPlus size={20} />
-            <button>New Chat</button>
+            <button>Nouvelle relance</button>
           </div>
+          <div className="toggle-container">
+            <label>
+              <input
+                type="checkbox"
+                className="large-checkbox"
+                checked={searchInDocuments}
+                onChange={() => setSearchInDocuments((prev) => !prev)}
+              />
+              Rechercher dans les documents
+            </label>
+          </div>
+
           <div className="sidebar-history">
             {uniqueTitles.length > 0 && previousChats.length !== 0 && (
               <>
@@ -187,7 +204,7 @@ function App() {
             )}
             {localUniqueTitles.length > 0 && localChats.length !== 0 && (
               <>
-                <p>Previous</p>
+                <p>Conversations</p>
                 <ul>
                   {localUniqueTitles?.map((uniqueTitle, idx) => {
                     const listItems = document.querySelectorAll("li");
@@ -214,11 +231,12 @@ function App() {
           <div className="sidebar-info">
             <div className="sidebar-info-upgrade">
               <BiUser size={20} />
-              <p>Upgrade plan</p>
+              <p>Ajouter des documents</p>
+              <FileUploader />
             </div>
             <div className="sidebar-info-user">
               <BiSolidUserCircle size={20} />
-              <p>User</p>
+              <p>Utilisateur</p>
             </div>
           </div>
         </section>
@@ -232,8 +250,8 @@ function App() {
                 height={45}
                 alt="ChatGPT"
               />
-              <h1>Chat GPT Clone</h1>
-              <h3>How can I help you today?</h3>
+              <h1>DNAi</h1>
+              <h3>Comme puis-je vous aider?</h3>
             </div>
           )}
 
@@ -266,12 +284,12 @@ function App() {
                     )}
                     {isUser ? (
                       <div>
-                        <p className="role-title">You</p>
+                        <p className="role-title">Vous</p>
                         <p>{chatMsg.content}</p>
                       </div>
                     ) : (
                       <div>
-                        <p className="role-title">ChatGPT</p>
+                        <p className="role-title">DNAi</p>
                         <p>{chatMsg.content}</p>
                       </div>
                     )}
@@ -285,9 +303,9 @@ function App() {
             <form className="form-container" onSubmit={submitHandler}>
               <input
                 type="text"
-                placeholder="Send a message."
+                placeholder="Envoyez un message."
                 spellCheck="false"
-                value={isResponseLoading ? "Processing..." : text}
+                value={isResponseLoading ? "En attente de la réponse..." : text}
                 onChange={(e) => setText(e.target.value)}
                 readOnly={isResponseLoading}
               />
@@ -298,8 +316,7 @@ function App() {
               )}
             </form>
             <p>
-              ChatGPT can make mistakes. Consider checking important
-              information.
+              L'agent intelligent des banques d'affaires.
             </p>
           </div>
         </section>

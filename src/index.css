@@ -31,7 +31,7 @@ button {
   height: 100vh;
   display: grid;
   grid-template-columns: 0fr 1fr;
-  background-color: #343541;
+  background-color: black; /* #343541 */
 }
 
 .burger {
@@ -289,4 +289,24 @@ button {
   .main-header li {
     gap: 1rem;
   }
+}
+
+
+.toggle-container {
+  margin: 10px;
+}
+
+.toggle-container label {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-container input {
+  margin-right: 8px;
+}
+
+.large-checkbox {
+  width: 30px; /* Augmente la largeur de la case à cocher */
+  height: 30px; /* Augmente la hauteur de la case à cocher */
+  margin-right: 8px;
 }

@@ -5,7 +5,7 @@ import { Resend } from "resend";
 import dotenv from "dotenv";
 dotenv.config();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY); //
 
 const app = express();
 app.use(express.json());
@@ -18,7 +18,9 @@ const limiter = rateLimit({
 });
 
 const auth = (req, res, next) => {
+
   if (req.headers.authorization !== process.env.VITE_AUTH_TOKEN) {
+    console.log("auhtorization")
     return res.status(401).send("Unauthorized");
   }
   next();
@@ -55,13 +57,16 @@ app.post("/api/completions", auth, limiter, async (req, res) => {
   };
 
   try {
+    // const response = await fetch(
+    //   "https://api.openai.com/v1/chat/completions",
+    //   options
+    // );
     const response = await fetch(
-      "https://api.openai.com/v1/chat/completions",
+      "http://192.168.0.32:5000/generate",
       options
     );
-
     const data = await response.json();
-
+    console.log(data)
     res.send(data);
   } catch (e) {
     console.error(e);
